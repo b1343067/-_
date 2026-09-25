@@ -15,8 +15,8 @@ custom_css = """
         font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
     }
     
-    /* 標題顏色 */
-    h1, h2, h3, h4, h5, h6, p, span, div {
+    /* 標題與一般文字顏色 */
+    h1, h2, h3, h4, h5, h6, p, span {
         color: #5D544A !important;
     }
 
@@ -36,14 +36,19 @@ custom_css = """
 
     /* 主按鈕 (Primary Button) 的專屬大地色 */
     .stButton > button[kind="primary"] {
-        background-color: #8C6A4A;
-        color: white !important;
+        background-color: #8C6A4A !important;
         border: none;
         border-radius: 8px;
         transition: 0.3s;
     }
+    
+    /* 🔥 關鍵修正：強制按鈕「裡面」的所有字體變成純白色！ */
+    .stButton > button[kind="primary"] * {
+        color: #FFFFFF !important;
+    }
+
     .stButton > button[kind="primary"]:hover {
-        background-color: #6B5035;
+        background-color: #6B5035 !important;
     }
     
     /* 資料表外框微調 */
