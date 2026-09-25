@@ -11,50 +11,57 @@ custom_css = """
     /* 整體背景色與字體 */
     .stApp {
         background-color: #F4E8D9;
-        color: #5D544A;
         font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
     }
     
-    /* 標題與一般文字顏色 */
-    h1, h2, h3, h4, h5, h6, p, span {
+    /* 全局文字顏色 */
+    h1, h2, h3, h4, h5, h6, p, span, div {
         color: #5D544A !important;
     }
 
     /* 頂部數據大字報的柔化卡片背景 */
     [data-testid="stMetric"] {
-        background-color: rgba(255, 255, 255, 0.5);
-        border-radius: 12px;
-        padding: 15px 20px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        background-color: rgba(255, 255, 255, 0.5) !important;
+        border-radius: 12px !important;
+        padding: 15px 20px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
     }
     
     /* 數據大字報的數字顏色 */
-    [data-testid="stMetricValue"] {
+    [data-testid="stMetricValue"] div {
         color: #8C6A4A !important; 
-        font-weight: 700;
+        font-weight: 700 !important;
     }
 
-    /* 🔥 關鍵修正：同時涵蓋一般按鈕與表單送出鈕，強制套用大地色與純白字體 */
-    button[kind="primary"] {
+    /* 🔥 暴力修正：涵蓋所有主按鈕與表單送出鈕背景色 */
+    button[kind="primary"],
+    [data-testid="stFormSubmitButton"] button {
         background-color: #8C6A4A !important;
         border: none !important;
         border-radius: 8px !important;
         transition: 0.3s;
     }
     
-    button[kind="primary"] * {
+    /* 🔥 暴力修正：強制按鈕裡面所有的 p, span, div 字體變成純白 */
+    button[kind="primary"] p,
+    button[kind="primary"] span,
+    button[kind="primary"] div,
+    [data-testid="stFormSubmitButton"] button p,
+    [data-testid="stFormSubmitButton"] button span,
+    [data-testid="stFormSubmitButton"] button div {
         color: #FFFFFF !important;
     }
 
-    button[kind="primary"]:hover {
+    button[kind="primary"]:hover,
+    [data-testid="stFormSubmitButton"] button:hover {
         background-color: #6B5035 !important;
     }
     
     /* 資料表外框微調 */
     [data-testid="stDataFrame"] {
-        background-color: rgba(255, 255, 255, 0.6);
-        border-radius: 10px;
-        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.6) !important;
+        border-radius: 10px !important;
+        padding: 10px !important;
     }
 </style>
 """
