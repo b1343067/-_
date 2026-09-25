@@ -34,14 +34,14 @@ df['實賺淨利'] = df['實賺淨利'].round().astype(int)
 
 # --- 頂部儀表板 ---
 col1, col2, col3 = st.columns(3)
-col1.metric("📦 總賣出件數", f"{int(total_sold.sum())} 件")
-col2.metric("💰 累積營業額", f"$ {int(df['總營業額'].sum()):,}")
-col3.metric("🔥 實賺淨利", f"$ {int(df['實賺淨利'].sum()):,}")
+col1.metric("賣出件數", f"{int(total_sold.sum())} 件")
+col2.metric("營業額", f"$ {int(df['總營業額'].sum()):,}")
+col3.metric("實賺淨利", f"$ {int(df['實賺淨利'].sum()):,}")
 
 st.divider()
 
 # --- 互動式資料表 ---
-st.markdown("### 📝 庫存與銷售紀錄")
+st.markdown("### 庫存與銷售紀錄")
 st.caption("直接修改「賣出早鳥」與「賣出原價」，系統會自動存回 Google 試算表。")
 
 edited_df = st.data_editor(
@@ -52,11 +52,11 @@ edited_df = st.data_editor(
         "進貨成本": st.column_config.NumberColumn("成本 ($)", disabled=True),
         "早鳥價": st.column_config.NumberColumn("早鳥價 ($)", disabled=True),
         "原價": st.column_config.NumberColumn("原價 ($)", disabled=True),
-        "賣出早鳥": st.column_config.NumberColumn("✨ 賣出早鳥", min_value=0, step=1),
-        "賣出原價": st.column_config.NumberColumn("🛒 賣出原價", min_value=0, step=1),
-        "剩餘庫存": st.column_config.NumberColumn("📦 剩餘庫存", disabled=True),
-        "總營業額": st.column_config.NumberColumn("💰 總營業額 ($)", disabled=True),
-        "實賺淨利": st.column_config.NumberColumn("🔥 實賺淨利 ($)", disabled=True),
+        "賣出早鳥": st.column_config.NumberColumn("賣出早鳥", min_value=0, step=1),
+        "賣出原價": st.column_config.NumberColumn("賣出原價", min_value=0, step=1),
+        "剩餘庫存": st.column_config.NumberColumn("庫存", disabled=True),
+        "總營業額": st.column_config.NumberColumn("營業額 ($)", disabled=True),
+        "實賺淨利": st.column_config.NumberColumn("淨利 ($)", disabled=True),
     },
     hide_index=True,
     use_container_width=True
@@ -70,7 +70,7 @@ if not edited_df.equals(df):
     
     with st.spinner('儲存至 Google 雲端中...'):
         conn.update(worksheet="工作表1", data=save_df)
-    st.success("✅ 已自動存回 Google 試算表！")
+    st.success("已自動存回 Google 試算表！")
     st.rerun()
 
 st.divider()
@@ -95,5 +95,5 @@ with st.form("add_product_form", clear_on_submit=True):
             updated_df = pd.concat([df[['品名款式', '總庫存', '進貨成本', '早鳥價', '原價', '賣出早鳥', '賣出原價']], new_row], ignore_index=True)
             with st.spinner('寫入資料庫中...'):
                 conn.update(worksheet="工作表1", data=updated_df)
-            st.success("✅ 新增成功！")
+            st.success("新增成功！")
             st.rerun()
