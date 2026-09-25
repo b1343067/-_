@@ -1,27 +1,38 @@
 import streamlit as st
 import pandas as pd
+import os
 
 # --- 常數設定 ---
 SHOPEE_FEE = 0.12  # 蝦皮手續費 12%
 PACKAGING = 10     # 包材費 10 元
+DATA_FILE = "shixu_data.csv" # 自動存檔的檔名
 
 # --- 頁面設定 ---
 st.set_page_config(page_title="拾序｜營運與利潤儀表板", page_icon="📦", layout="wide")
 st.title("拾序")
 
-# --- 初始化 Session State ---
-# 確保每次重整網頁時，數據不會跑掉，且預載你目前的 7 樣商品
+# --- 資料庫載入與自動存檔設定 ---
+def load_data():
+    # 如果雲端/本地已經有這個 csv 檔，就讀取它；沒有的話就建立預設值
+    if os.path.exists(DATA_FILE):
+        return pd.read_csv(DATA_FILE)
+    else:
+        initial_data = {
+            "品名款式": ["簡約桌面理線盒", "無痕浴室防水掛袋", "床頭掛燈（無時鐘）", "床頭掛燈（有時鐘）", "質感洞洞板收納盒", "床邊收納掛袋（低配）", "床邊收納掛袋（高配）"],
+            "總庫存": [5, 5, 3, 3, 5, 4, 4],
+            "進貨成本": [43, 47, 58, 58, 86, 102, 102],
+            "早鳥價": [69, 75, 99, 129, 159, 135, 219],
+            "原價": [99, 119, 149, 179, 229, 179, 279],
+            "賣出早鳥": [0, 0, 0, 0, 0, 0, 0],
+            "賣出原價": [0, 0, 0, 0, 0, 0, 0]
+        }
+        df = pd.DataFrame(initial_data)
+        df.to_csv(DATA_FILE, index=False)
+        return df
+
+# 確保每次重整網頁時，數據不會跑掉，且預載商品資料
 if 'df' not in st.session_state:
-    initial_data = {
-        "品名款式": ["簡約桌面理線盒", "無痕浴室防水掛袋", "床頭掛燈（無時鐘）", "床頭掛燈（有時鐘）", "質感洞洞板收納盒", "床邊收納掛袋（低配）", "床邊收納掛袋（高配）"],
-        "總庫存": [5, 5, 3, 3, 5, 4, 4],
-        "進貨成本": [43, 47, 58, 58, 86, 102, 102],
-        "早鳥價": [69, 75, 99, 129, 159, 135, 219],
-        "原價": [99, 119, 149, 179, 229, 179, 279],
-        "賣出早鳥": [0, 0, 0, 0, 0, 0, 0],
-        "賣出原價": [0, 0, 0, 0, 0, 0, 0]
-    }
-    st.session_state.df = pd.DataFrame(initial_data)
+    st.session_state.df = load_data()
 
 # --- 核心數據計算 ---
 df = st.session_state.df.copy()
@@ -70,10 +81,11 @@ edited_df = st.data_editor(
     use_container_width=True
 )
 
-# 當使用者在表格上修改數字後，更新回 Session State，讓網頁刷新時維持最新數據
+# 當使用者在表格上修改數字後，更新回 Session State，讓網頁刷新時維持最新數據，並自動寫入存檔
 if not edited_df.equals(df):
     st.session_state.df['賣出早鳥'] = edited_df['賣出早鳥']
     st.session_state.df['賣出原價'] = edited_df['賣出原價']
+    st.session_state.df.to_csv(DATA_FILE, index=False) # 寫入 CSV 存檔
     st.rerun()
 
 st.divider()
@@ -105,5 +117,34 @@ with st.form("add_product_form", clear_on_submit=True):
             })
             # 將新商品加入 Session State
             st.session_state.df = pd.concat([st.session_state.df, new_row], ignore_index=True)
+            st.session_state.df.to_csv(DATA_FILE, index=False) # 寫入 CSV 存檔
             st.success(f"✅ 已成功新增：{new_name}！")
             st.rerun()
+
+# --- 側邊欄：備份與還原系統 ---
+st.sidebar.title("💾 備份與還原")
+st.sidebar.write("建議定期下載備份，以防雲端重置資料遺失。")
+
+# 1. 下載最新進度
+csv_export = st.session_state.df.to_csv(index=False).encode('utf-8')
+st.sidebar.download_button(
+    label="⬇️ 下載最新進度 (備份)",
+    data=csv_export,
+    file_name="shixu_backup.csv",
+    mime="text/csv"
+)
+
+st.sidebar.divider()
+
+# 2. 上傳還原進度
+st.sidebar.write("🔄 從備份檔還原：")
+uploaded_file = st.sidebar.file_uploader("選擇 shixu_backup.csv", type=["csv"])
+
+if uploaded_file is not None:
+    try:
+        restored_df = pd.read_csv(uploaded_file)
+        st.session_state.df = restored_df
+        restored_df.to_csv(DATA_FILE, index=False) # 覆寫雲端上的檔案
+        st.sidebar.success("✅ 還原成功！請重新整理網頁。")
+    except Exception as e:
+        st.sidebar.error("檔案格式有誤。")
