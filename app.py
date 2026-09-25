@@ -40,7 +40,6 @@ df['實賺淨利'] = df['總營業額'] - shopee_cut - (total_sold_per_item * df
 df['實賺淨利'] = df['實賺淨利'].round().astype(int) # 四捨五入取整數
 
 # --- 頂部儀表板 (Metrics) ---
-st.markdown("### 📊 總體營運狀況")
 col1, col2, col3 = st.columns(3)
 col1.metric(" 總賣出件數", f"{int(total_sold_per_item.sum())} 件")
 col2.metric(" 累積營業額", f"$ {int(df['總營業額'].sum()):,}")
