@@ -94,13 +94,13 @@ st.caption("提示：修改數量時，上方的數字會即時試算。確認�
 edited_df = st.data_editor(
     df,
     column_config={
-        "品名款式": st.column_config.TextColumn("品名款式", disabled=True),
-        "總庫存": st.column_config.NumberColumn("總庫存", disabled=True),
+        "品名款式": st.column_config.TextColumn("品名", disabled=True),
+        "總庫存": st.column_config.NumberColumn("庫存", disabled=True),
         "進貨成本": st.column_config.NumberColumn("成本 ($)", disabled=True),
         "早鳥價": st.column_config.NumberColumn("早鳥價 ($)", disabled=True),
         "原價": st.column_config.NumberColumn("原價 ($)", disabled=True),
-        "賣出早鳥": st.column_config.NumberColumn("✨ 賣出早鳥", min_value=0, step=1),
-        "賣出原價": st.column_config.NumberColumn("🛒 賣出原價", min_value=0, step=1),
+        "賣出早鳥": st.column_config.NumberColumn("賣出早鳥", min_value=0, step=1),
+        "賣出原價": st.column_config.NumberColumn("賣出原價", min_value=0, step=1),
     },
     hide_index=True,
     use_container_width=True
