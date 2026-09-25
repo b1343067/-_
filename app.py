@@ -71,7 +71,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 SHOPEE_FEE = 0.12
 PACKAGING = 10
 
-st.title("📦 拾序｜營運與利潤儀表板")
+st.title("拾序｜")
 
 # --- 建立與 Google 試算表的連線 ---
 conn = st.connection("gsheets", type=GSheetsConnection)
@@ -88,8 +88,8 @@ metrics_container = st.container()
 st.divider()
 
 # --- 互動式資料表 ---
-st.markdown("### 📝 庫存與銷售紀錄")
-st.caption("💡 提示：修改數量時，上方的數字會即時試算。確認無誤後，請務必點擊最下方的「儲存按鈕」寫入雲端！")
+st.markdown("### 庫存")
+st.caption("提示：修改數量時，上方的數字會即時試算。確認無誤後，請務必點擊最下方的「儲存按鈕」寫入雲端！")
 
 edited_df = st.data_editor(
     df,
@@ -118,12 +118,12 @@ edited_df['實賺淨利'] = edited_df['實賺淨利'].round().astype(int)
 # --- 填回頂部儀表板 ---
 with metrics_container:
     col1, col2, col3 = st.columns(3)
-    col1.metric("📦 總賣出件數", f"{int(total_sold.sum())} 件")
-    col2.metric("💰 累積營業額", f"$ {int(edited_df['總營業額'].sum()):,}")
-    col3.metric("🔥 實賺淨利", f"$ {int(edited_df['實賺淨利'].sum()):,}")
+    col1.metric("賣出件數", f"{int(total_sold.sum())} 件")
+    col2.metric("營業額", f"$ {int(edited_df['總營業額'].sum()):,}")
+    col3.metric("淨利", f"$ {int(edited_df['實賺淨利'].sum()):,}")
 
 # --- 手動儲存按鈕 ---
-if st.button("💾 確認無誤，儲存最新數量到雲端", type="primary", use_container_width=True):
+if st.button("儲存", type="primary", use_container_width=True):
     columns_to_save = ['品名款式', '總庫存', '進貨成本', '早鳥價', '原價', '賣出早鳥', '賣出原價']
     save_df = edited_df[columns_to_save].copy()
     
@@ -132,13 +132,13 @@ if st.button("💾 確認無誤，儲存最新數量到雲端", type="primary", 
     with st.spinner('儲存至 Google 雲端中...'):
         conn.update(worksheet="工作表1", data=save_df)
         st.cache_data.clear()
-    st.success("✅ 已成功存回 Google 試算表！")
+    st.success("成功")
     st.rerun()
 
 st.divider()
 
 # --- 新增商品 ---
-st.markdown("### ➕ 新增商品")
+st.markdown("### 新增商品")
 with st.form("add_product_form", clear_on_submit=True):
     c1, c2, c3, c4, c5 = st.columns(5)
     new_name = c1.text_input("品名款式")
@@ -157,5 +157,5 @@ with st.form("add_product_form", clear_on_submit=True):
             with st.spinner('寫入資料庫中...'):
                 conn.update(worksheet="工作表1", data=updated_df)
                 st.cache_data.clear()
-            st.success("✅ 新增成功！")
+            st.success("成功")
             st.rerun()
