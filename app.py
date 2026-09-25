@@ -56,12 +56,12 @@ edited_df['實賺淨利'] = edited_df['實賺淨利'].round().astype(int)
 # --- 將算好的數字填回頂部的儀表板 ---
 with metrics_container:
     col1, col2, col3 = st.columns(3)
-    col1.metric("📦 總賣出件數", f"{int(total_sold.sum())} 件")
-    col2.metric("💰 累積營業額", f"$ {int(edited_df['總營業額'].sum()):,}")
-    col3.metric("🔥 實賺淨利", f"$ {int(edited_df['實賺淨利'].sum()):,}")
+    col1.metric("賣出件數", f"{int(total_sold.sum())} 件")
+    col2.metric("營業額", f"$ {int(edited_df['總營業額'].sum()):,}")
+    col3.metric("淨利", f"$ {int(edited_df['實賺淨利'].sum()):,}")
 
 # --- 手動儲存按鈕 ---
-if st.button("💾 確認無誤，儲存最新數量到雲端", type="primary", use_container_width=True):
+if st.button("確認無誤，儲存最新數量到雲端", type="primary", use_container_width=True):
     columns_to_save = ['品名款式', '總庫存', '進貨成本', '早鳥價', '原價', '賣出早鳥', '賣出原價']
     save_df = edited_df[columns_to_save].copy()
     
@@ -70,7 +70,7 @@ if st.button("💾 確認無誤，儲存最新數量到雲端", type="primary", 
     with st.spinner('儲存至 Google 雲端中...'):
         conn.update(worksheet="工作表1", data=save_df)
         st.cache_data.clear() # 存檔後強制把系統的舊記憶刪除
-    st.success("✅ 已成功存回 Google 試算表！")
+    st.success("已成功存回 Google 試算表！")
     st.rerun()
 
 st.divider()
@@ -95,5 +95,5 @@ with st.form("add_product_form", clear_on_submit=True):
             with st.spinner('寫入資料庫中...'):
                 conn.update(worksheet="工作表1", data=updated_df)
                 st.cache_data.clear()
-            st.success("✅ 新增成功！")
+            st.success("新增成功！")
             st.rerun()
