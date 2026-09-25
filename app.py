@@ -42,7 +42,7 @@ st.divider()
 
 # --- 互動式資料表 ---
 st.markdown("### 庫存與銷售紀錄")
-st.caption("直接修改「賣出早鳥」與「賣出原價」，系統會自動存回 Google 試算表。")
+st.caption("修改完「賣出早鳥」與「賣出原價」後，請點擊下方的「儲存」按鈕同步至雲端。")
 
 edited_df = st.data_editor(
     df,
@@ -62,15 +62,17 @@ edited_df = st.data_editor(
     use_container_width=True
 )
 
-# 偵測到修改時，自動覆蓋回 Google 試算表
-# 只提取要存回 Google Sheets 的前 7 個基礎欄位
-if not edited_df.equals(df):
+# --- 手動儲存按鈕 (取代原本的自動存檔，避免 Google API 限制) ---
+if st.button("確認無誤，儲存最新數量到雲端", type="primary", use_container_width=True):
     columns_to_save = ['品名款式', '總庫存', '進貨成本', '早鳥價', '原價', '賣出早鳥', '賣出原價']
-    save_df = edited_df[columns_to_save]
+    save_df = edited_df[columns_to_save].copy()
+    
+    # 防呆機制：確保空白欄位補 0 並轉為整數，防止 Google 試算表格式錯誤
+    save_df.iloc[:, 1:] = save_df.iloc[:, 1:].fillna(0).astype(int)
     
     with st.spinner('儲存至 Google 雲端中...'):
         conn.update(worksheet="工作表1", data=save_df)
-    st.success("已自動存回 Google 試算表！")
+    st.success("已成功存回 Google 試算表！")
     st.rerun()
 
 st.divider()
