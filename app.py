@@ -34,20 +34,19 @@ custom_css = """
         font-weight: 700;
     }
 
-    /* 主按鈕 (Primary Button) 的專屬大地色 */
-    .stButton > button[kind="primary"] {
+    /* 🔥 關鍵修正：同時涵蓋一般按鈕與表單送出鈕，強制套用大地色與純白字體 */
+    button[kind="primary"] {
         background-color: #8C6A4A !important;
-        border: none;
-        border-radius: 8px;
+        border: none !important;
+        border-radius: 8px !important;
         transition: 0.3s;
     }
     
-    /* 🔥 關鍵修正：強制按鈕「裡面」的所有字體變成純白色！ */
-    .stButton > button[kind="primary"] * {
+    button[kind="primary"] * {
         color: #FFFFFF !important;
     }
 
-    .stButton > button[kind="primary"]:hover {
+    button[kind="primary"]:hover {
         background-color: #6B5035 !important;
     }
     
