@@ -7,7 +7,7 @@ PACKAGING = 10     # 包材費 10 元
 
 # --- 頁面設定 ---
 st.set_page_config(page_title="拾序｜營運與利潤儀表板", page_icon="📦", layout="wide")
-st.title("📦 拾序｜營運與利潤儀表板")
+st.title("拾序")
 
 # --- 初始化 Session State ---
 # 確保每次重整網頁時，數據不會跑掉，且預載你目前的 7 樣商品
@@ -42,15 +42,15 @@ df['實賺淨利'] = df['實賺淨利'].round().astype(int) # 四捨五入取整
 # --- 頂部儀表板 (Metrics) ---
 st.markdown("### 📊 總體營運狀況")
 col1, col2, col3 = st.columns(3)
-col1.metric("📦 總賣出件數", f"{int(total_sold_per_item.sum())} 件")
-col2.metric("💰 累積營業額", f"$ {int(df['總營業額'].sum()):,}")
-col3.metric("🔥 實賺淨利入袋 (已扣手續費/包材)", f"$ {int(df['實賺淨利'].sum()):,}")
+col1.metric(" 總賣出件數", f"{int(total_sold_per_item.sum())} 件")
+col2.metric(" 累積營業額", f"$ {int(df['總營業額'].sum()):,}")
+col3.metric(" 實賺", f"$ {int(df['實賺淨利'].sum()):,}")
 
 st.divider()
 
 # --- 互動式資料表 (Data Editor) ---
-st.markdown("### 📝 庫存與銷售紀錄")
-st.caption("💡 提示：請直接在下表的 **「賣出早鳥」** 與 **「賣出原價」** 欄位點擊兩下修改數字，系統會自動重算利潤。")
+st.markdown("### 庫存與銷售紀錄")
+st.caption("提示：請直接在下表的 **「賣出早鳥」** 與 **「賣出原價」** 欄位點擊兩下修改數字，系統會自動重算利潤。")
 
 # 設定欄位顯示格式與鎖定狀態 (只允許編輯銷售數量)
 edited_df = st.data_editor(
@@ -61,11 +61,11 @@ edited_df = st.data_editor(
         "進貨成本": st.column_config.NumberColumn("成本 ($)", disabled=True),
         "早鳥價": st.column_config.NumberColumn("早鳥價 ($)", disabled=True),
         "原價": st.column_config.NumberColumn("原價 ($)", disabled=True),
-        "賣出早鳥": st.column_config.NumberColumn("✨ 賣出早鳥", min_value=0, step=1, help="請填寫早鳥方案賣出數量"),
-        "賣出原價": st.column_config.NumberColumn("🛒 賣出原價", min_value=0, step=1, help="請填寫原價方案賣出數量"),
-        "剩餘庫存": st.column_config.NumberColumn("📦 剩餘庫存", disabled=True),
-        "總營業額": st.column_config.NumberColumn("💰 總營業額 ($)", disabled=True),
-        "實賺淨利": st.column_config.NumberColumn("🔥 實賺淨利 ($)", disabled=True),
+        "賣出早鳥": st.column_config.NumberColumn("賣出早鳥", min_value=0, step=1, help="請填寫早鳥方案賣出數量"),
+        "賣出原價": st.column_config.NumberColumn("賣出原價", min_value=0, step=1, help="請填寫原價方案賣出數量"),
+        "剩餘庫存": st.column_config.NumberColumn("剩餘庫存", disabled=True),
+        "總營業額": st.column_config.NumberColumn("總營業額 ($)", disabled=True),
+        "實賺淨利": st.column_config.NumberColumn("實賺淨利 ($)", disabled=True),
     },
     hide_index=True,
     use_container_width=True
